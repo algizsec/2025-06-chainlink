@@ -5,3 +5,6 @@ chainlink=lib/vendor/chainlink/v2.18.0
 forge-std=lib/vendor/forge-std/v1.9.4/src
 space-and-time=lib/vendor/space-and-time
 @delegatexyz=lib/vendor/delegatexyz
+@recon/=lib/setup-helpers/src/
+@chimera/=lib/chimera/src/
+@recon/=lib/setup-helpers/src/

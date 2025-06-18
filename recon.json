@@ -1,0 +1,97 @@
+{
+  "out/IBUILDClaim.sol/IBUILDClaim.json": {
+    "functions": [
+      {
+        "signature": "claim(address,tuple[])",
+        "actor": "actor",
+        "mode": "normal"
+      },
+      {
+        "signature": "deposit(uint256)",
+        "actor": "actor",
+        "mode": "normal"
+      },
+      {
+        "signature": "withdraw()",
+        "actor": "actor",
+        "mode": "normal"
+      }
+    ],
+    "separated": true
+  },
+  "out/IBUILDFactory.sol/IBUILDFactory.json": {
+    "functions": [
+      {
+        "signature": "addProjects(tuple[])",
+        "actor": "actor",
+        "mode": "normal"
+      },
+      {
+        "signature": "addTotalDeposited(address,uint256)",
+        "actor": "actor",
+        "mode": "normal"
+      },
+      {
+        "signature": "cancelWithdraw(address)",
+        "actor": "actor",
+        "mode": "normal"
+      },
+      {
+        "signature": "deployClaim(address)",
+        "actor": "actor",
+        "mode": "normal"
+      },
+      {
+        "signature": "executeWithdraw(address)",
+        "actor": "actor",
+        "mode": "normal"
+      },
+      {
+        "signature": "pauseClaimContract(address)",
+        "actor": "actor",
+        "mode": "normal"
+      },
+      {
+        "signature": "reduceRefundableAmount(address,uint256,uint256)",
+        "actor": "actor",
+        "mode": "normal"
+      },
+      {
+        "signature": "removeProjects(address[])",
+        "actor": "actor",
+        "mode": "normal"
+      },
+      {
+        "signature": "scheduleWithdraw(address,address,uint256)",
+        "actor": "actor",
+        "mode": "normal"
+      },
+      {
+        "signature": "setProjectSeasonConfig(tuple[])",
+        "actor": "actor",
+        "mode": "normal"
+      },
+      {
+        "signature": "setSeasonUnlockStartTime(uint256,uint256)",
+        "actor": "actor",
+        "mode": "normal"
+      },
+      {
+        "signature": "setUnlockConfigMaxValues(tuple)",
+        "actor": "actor",
+        "mode": "normal"
+      },
+      {
+        "signature": "startRefund(address,uint256)",
+        "actor": "actor",
+        "mode": "normal"
+      },
+      {
+        "signature": "unpauseClaimContract(address)",
+        "actor": "actor",
+        "mode": "normal"
+      }
+    ],
+    "separated": true
+  }
+}
