@@ -21,28 +21,30 @@ import {IDelegateRegistry} from "@delegatexyz/delegate-registry/v2.0/src/IDelega
 abstract contract Setup is BaseSetup, ActorManager, AssetManager, Utils {
     IBUILDFactory iBUILDFactory;
     IBUILDClaim iBUILDClaim;
+    address token;
 
-    /// === Setup === ///
-    /// This contains all calls to be performed in the tester constructor, both for Echidna and Foundry
     function setup() internal virtual override {
-        iBUILDFactory = IBUILDFactory(
-            address(
-                new BUILDFactory(
-                    BUILDFactory.ConstructorParams({
-                        admin: address(this),
-                        maxUnlockDuration: 7 days,
-                        maxUnlockDelay: 1 days,
-                        delegateRegistry: IDelegateRegistry(
-                            new DelegateRegistry()
-                        )
-                    })
-                )
-            )
-        );
+        address adminAddr = address(this);
+        token = _newAsset(18); // Create a new asset for the token, adjust decimals as needed
 
-        iBUILDClaim = iBUILDFactory.deployClaim(_newAsset(18));
+        BUILDFactory.ConstructorParams memory params = BUILDFactory.ConstructorParams({
+            admin: adminAddr,
+            maxUnlockDuration: 30 days, // Example value, adjust as needed
+            maxUnlockDelay: 7 days, // Example value, adjust as needed
+            delegateRegistry: IDelegateRegistry(new DelegateRegistry()) // Example delegate registry, adjust as needed
+        }); // Example delegate registry, adjust as needed
+
+        iBUILDFactory = IBUILDFactory(address(new BUILDFactory(params))); // TODO: Add parameters here
+        
+        IBUILDFactory.AddProjectParams[] memory addProjectParams = new IBUILDFactory.AddProjectParams[](1);
+        addProjectParams[0] = IBUILDFactory.AddProjectParams({
+            token: token,
+            admin: adminAddr
+        });
+        iBUILDFactory.addProjects(addProjectParams); // Cast to BUILDClaim type
+        iBUILDClaim = iBUILDFactory.deployClaim(token); // TODO: Add parameters here
+
     }
-
     /// === MODIFIERS === ///
     /// Prank admin and actor
 
