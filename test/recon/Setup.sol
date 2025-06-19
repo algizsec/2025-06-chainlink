@@ -23,6 +23,10 @@ abstract contract Setup is BaseSetup, ActorManager, AssetManager, Utils {
     IBUILDClaim iBUILDClaim;
     address token;
 
+    uint256 INITIAL_DEPOSIT_AMOUNT = 1000 ether;
+    uint256 MAX_UNLOCK_DURATION = 30 days;
+    uint256 MAX_UNLOCK_DELAY = 7 days;
+
     function setup() internal virtual override {
         address adminAddr = address(this);
         token = _newAsset(18); // Create a new asset for the token, adjust decimals as needed
@@ -43,6 +47,14 @@ abstract contract Setup is BaseSetup, ActorManager, AssetManager, Utils {
         });
         iBUILDFactory.addProjects(addProjectParams); // Cast to BUILDClaim type
         iBUILDClaim = iBUILDFactory.deployClaim(token); // TODO: Add parameters here
+        
+        address[] memory receivers = new address[](1);
+        receivers[0] = adminAddr;
+        address[] memory approved = new address[](1);
+        approved[0] = address(iBUILDClaim);
+        
+        _finalizeAssetDeployment(receivers, approved, INITIAL_DEPOSIT_AMOUNT);
+        iBUILDClaim.deposit(INITIAL_DEPOSIT_AMOUNT);
 
     }
     /// === MODIFIERS === ///
