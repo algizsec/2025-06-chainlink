@@ -15,6 +15,7 @@ abstract contract Properties is BeforeAfter, Asserts {
         // currently unused:
         // address[] memory projects = iBUILDFactory.getProjects();
         // address firstProject = projects[0];
+        
 
         (IBUILDFactory.ProjectSeasonConfig memory config, 
         uint256 unlockStartsAt,
@@ -30,6 +31,7 @@ abstract contract Properties is BeforeAfter, Asserts {
         eq(claimableState.bonus, config.tokenAmount - claimableState.base, "Bonus + Base != tokenAmount");
         lte(claimableState.vested, claimableState.bonus, "Vested > Overall Bonus");
         lte(claimableState.earlyVestableBonus, claimableState.bonus, "Early Vestable > Bonus");
+        eq(globalState.totalClaimed, userState.claimed, "Global claimed != User claimed");
     }
 
     function getCurrentStates(uint256 seasonId) internal view returns (

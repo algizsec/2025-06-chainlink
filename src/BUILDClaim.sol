@@ -34,7 +34,7 @@ contract BUILDClaim is IBUILDClaim, ITypeAndVersion, ReentrancyGuard {
   string public constant override typeAndVersion = "BUILDClaim 1.0.0";
 
   /// @notice The claimed and early claimed states for a user per season
-  mapping(address user => mapping(uint256 seasonId => UserState)) private s_userStates;
+  mapping(address user => mapping(uint256 seasonId => UserState)) public s_userStates;
 
   /// @notice The global states for a season
   mapping(uint256 seasonId => GlobalState globalState) private s_globalStates;

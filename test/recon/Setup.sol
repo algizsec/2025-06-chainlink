@@ -17,9 +17,12 @@ import "src/BUILDClaim.sol";
 import "src/BUILDFactory.sol";
 import {DelegateRegistry} from "@delegatexyz/delegate-registry/v2.0/src/DelegateRegistry.sol";
 import {IDelegateRegistry} from "@delegatexyz/delegate-registry/v2.0/src/IDelegateRegistry.sol";
+import {StdCheats} from "forge-std/StdCheats.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 
-abstract contract Setup is BaseSetup, ActorManager, AssetManager, Utils {
+
+abstract contract Setup is BaseSetup, ActorManager, AssetManager, Utils, StdCheats {
     bytes32 public FOO = 0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef;
 
     IBUILDFactory iBUILDFactory;
@@ -61,6 +64,18 @@ abstract contract Setup is BaseSetup, ActorManager, AssetManager, Utils {
         iBUILDClaim.deposit(INITIAL_DEPOSIT_AMOUNT);
 
         //configure season
+        setupProjectSeason();
+
+        //add users
+        addUsersPool();
+
+        //1. define invariant based on states
+        //2. add active season (unlocking)
+        //3. fuzz claim
+        //4. move to refund? fuzz remaining tokens
+    }
+
+    function setupProjectSeason() internal {
         iBUILDFactory.setSeasonUnlockStartTime(INITIAL_SEASON_ID, block.timestamp + 1 seconds);
         IBUILDFactory.SetProjectSeasonParams[] memory seasonParams = new  IBUILDFactory.SetProjectSeasonParams[](1);
         seasonParams[0] = IBUILDFactory.SetProjectSeasonParams({
@@ -79,13 +94,15 @@ abstract contract Setup is BaseSetup, ActorManager, AssetManager, Utils {
         });
 
         iBUILDFactory.setProjectSeasonConfig(seasonParams);
-
-        //1. define invariant based on states
-        //2. add active season (unlocking)
-        //3. fuzz claim
-        //4. move to refund? fuzz remaining tokens
-
     }
+
+    function addUsersPool() internal {
+        for (uint i = 0; i < 50; i++) {
+            string memory userName = string.concat("user", Strings.toString(i));
+            _addActor(makeAddr(userName));
+        }
+    }
+
     /// === MODIFIERS === ///
     /// Prank admin and actor
 
@@ -98,4 +115,5 @@ abstract contract Setup is BaseSetup, ActorManager, AssetManager, Utils {
         vm.prank(address(_getActor()));
         _;
     }
+
 }

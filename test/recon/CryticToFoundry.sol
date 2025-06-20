@@ -24,9 +24,8 @@ contract CryticToFoundry is Test, TargetFunctions, FoundryAsserts {
     }
 
     function test_check_current_state() public {
-        // invariant_claim_within_allowed_limits();
-
         vm.warp(block.timestamp + 1 days);
+
         bytes32[] memory merkleProof = new bytes32[](1);
         merkleProof[0] = Setup.FOO;
         IBUILDClaim.ClaimParams[] memory claimParams = new IBUILDClaim.ClaimParams[](1); 
@@ -34,13 +33,12 @@ contract CryticToFoundry is Test, TargetFunctions, FoundryAsserts {
             seasonId: Setup.INITIAL_SEASON_ID,
             isEarlyClaim: false,
             proof: merkleProof,
-            maxTokenAmount: Setup.INITIAL_DEPOSIT_AMOUNT,
+            maxTokenAmount: Setup.INITIAL_DEPOSIT_AMOUNT / 2,
             salt: 0
         });
 
         IBUILDClaimTargets.iBUILDClaim_claim(_getActor(), claimParams);
 
         invariant_claim_within_allowed_limits();
-
     }
 }
