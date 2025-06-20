@@ -25,15 +25,11 @@ abstract contract Properties is BeforeAfter, Asserts {
         
         // season tokens overall
         // maxTokenAmount per user
-        lte(userState.claimed, config.tokenAmount, "Claimed <= Season Tokens");
-        // invariants: 
-        // userState.claimed <= config.tokenAmount
-        // claimableState.claimed == userState.claimed
-        // claimableState.bonus = config.tokenAmount - claimableState.base
-        // claimableState.bonus = maxUserTokenAmount - claimableState.base
-        // claimableState.vested <= claimableState.bonus
-        // claimableState.earlyVestableBonus <= claimableState.bonus
-        // claimableState.claimable = 
+        lte(userState.claimed, config.tokenAmount, "Claimed > Season Tokens");
+        eq(claimableState.claimed, userState.claimed, "ClaimableState.claimed != UserState.claimed");
+        eq(claimableState.bonus, config.tokenAmount - claimableState.base, "Bonus + Base != tokenAmount");
+        lte(claimableState.vested, claimableState.bonus, "Vested > Overall Bonus");
+        lte(claimableState.earlyVestableBonus, claimableState.bonus, "Early Vestable > Bonus");
     }
 
     function getCurrentStates(uint256 seasonId) internal view returns (
