@@ -26,6 +26,7 @@ abstract contract Setup is BaseSetup, ActorManager, AssetManager, Utils {
     uint256 INITIAL_DEPOSIT_AMOUNT = 1000 ether;
     uint256 MAX_UNLOCK_DURATION = 30 days;
     uint256 MAX_UNLOCK_DELAY = 7 days;
+    uint256 public INITIAL_SEASON_ID = 1;
 
     function setup() internal virtual override {
         address adminAddr = address(this);
@@ -55,6 +56,12 @@ abstract contract Setup is BaseSetup, ActorManager, AssetManager, Utils {
         
         _finalizeAssetDeployment(receivers, approved, INITIAL_DEPOSIT_AMOUNT);
         iBUILDClaim.deposit(INITIAL_DEPOSIT_AMOUNT);
+
+        //call factory._setProjectSeasonConfig (use constant seasonId)
+        //1. define invariant based on states
+        //2. add active season (unlocking)
+        //3. fuzz claim
+        //4. move to refund? fuzz remaining tokens
 
     }
     /// === MODIFIERS === ///

@@ -199,7 +199,7 @@ contract BUILDClaim is IBUILDClaim, ITypeAndVersion, ReentrancyGuard {
     UserState memory userState,
     UnlockState memory unlockState,
     uint256 maxTokenAmount
-  ) internal pure returns (ClaimableState memory) {
+  ) public pure returns (ClaimableState memory) { //@note: changed to public for testing
     ClaimableState memory claimableState;
     claimableState.base =
       (maxTokenAmount * config.baseTokenClaimBps) / PERCENTAGE_BASIS_POINTS_DENOMINATOR;
@@ -268,7 +268,7 @@ contract BUILDClaim is IBUILDClaim, ITypeAndVersion, ReentrancyGuard {
     uint256 unlockDelay,
     uint256 unlockDuration,
     uint256 targetTime
-  ) internal pure returns (UnlockState memory) {
+  ) public pure returns (UnlockState memory) { //@note: changed to public for testing purpose
     uint256 unlockDelayEndsAt = unlockStartsAt + unlockDelay;
     if (targetTime < unlockDelayEndsAt) {
       return UnlockState({isBeforeUnlock: true, isUnlocking: false, unlockElapsedDuration: 0});
