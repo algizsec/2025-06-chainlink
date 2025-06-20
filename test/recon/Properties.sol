@@ -11,7 +11,7 @@ import "src/BUILDFactory.sol";
 
 abstract contract Properties is BeforeAfter, Asserts {
     
-    function invariant_claim_within_allowed_limits() public view {
+    function invariant_claim_within_allowed_limits() public {
         // currently unused:
         // address[] memory projects = iBUILDFactory.getProjects();
         // address firstProject = projects[0];
@@ -22,12 +22,15 @@ abstract contract Properties is BeforeAfter, Asserts {
         IBUILDClaim.GlobalState memory globalState,
         BUILDClaim.UnlockState memory unlockState,
         IBUILDClaim.ClaimableState memory claimableState) = getCurrentStates(Setup.INITIAL_SEASON_ID);
-
-            
+        
+        // season tokens overall
+        // maxTokenAmount per user
+        lte(userState.claimed, config.tokenAmount, "Claimed <= Season Tokens");
         // invariants: 
         // userState.claimed <= config.tokenAmount
         // claimableState.claimed == userState.claimed
-        // claimableState.bonus = config.tokenAmount - userState.claimed
+        // claimableState.bonus = config.tokenAmount - claimableState.base
+        // claimableState.bonus = maxUserTokenAmount - claimableState.base
         // claimableState.vested <= claimableState.bonus
         // claimableState.earlyVestableBonus <= claimableState.bonus
         // claimableState.claimable = 
@@ -69,7 +72,6 @@ abstract contract Properties is BeforeAfter, Asserts {
             userState,
             unlockState,
             config.tokenAmount //TODO: currently, we are testing with 1 user in a project, whose tokens will be equal to the tokenAmount of the season configured
-
         );
     }
 }

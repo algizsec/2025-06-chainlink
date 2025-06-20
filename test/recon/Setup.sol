@@ -18,7 +18,10 @@ import "src/BUILDFactory.sol";
 import {DelegateRegistry} from "@delegatexyz/delegate-registry/v2.0/src/DelegateRegistry.sol";
 import {IDelegateRegistry} from "@delegatexyz/delegate-registry/v2.0/src/IDelegateRegistry.sol";
 
+
 abstract contract Setup is BaseSetup, ActorManager, AssetManager, Utils {
+    bytes32 public FOO = 0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef;
+
     IBUILDFactory iBUILDFactory;
     IBUILDClaim iBUILDClaim;
     address token;
@@ -26,7 +29,7 @@ abstract contract Setup is BaseSetup, ActorManager, AssetManager, Utils {
     uint256 INITIAL_DEPOSIT_AMOUNT = 1000 ether;
     uint256 MAX_UNLOCK_DURATION = 30 days;
     uint256 MAX_UNLOCK_DELAY = 7 days;
-    uint256 public INITIAL_SEASON_ID = 1;
+    uint32 public INITIAL_SEASON_ID = 1;
 
     function setup() internal virtual override {
         address adminAddr = address(this);
@@ -57,7 +60,26 @@ abstract contract Setup is BaseSetup, ActorManager, AssetManager, Utils {
         _finalizeAssetDeployment(receivers, approved, INITIAL_DEPOSIT_AMOUNT);
         iBUILDClaim.deposit(INITIAL_DEPOSIT_AMOUNT);
 
-        //call factory._setProjectSeasonConfig (use constant seasonId)
+        //configure season
+        iBUILDFactory.setSeasonUnlockStartTime(INITIAL_SEASON_ID, block.timestamp + 1 seconds);
+        IBUILDFactory.SetProjectSeasonParams[] memory seasonParams = new  IBUILDFactory.SetProjectSeasonParams[](1);
+        seasonParams[0] = IBUILDFactory.SetProjectSeasonParams({
+            seasonId: INITIAL_SEASON_ID,
+            token: _getAsset(),
+            config: IBUILDFactory.ProjectSeasonConfig({
+                tokenAmount: INITIAL_DEPOSIT_AMOUNT,
+                merkleRoot: FOO,
+                unlockDelay: 0,
+                unlockDuration: 5 days,
+                earlyVestRatioMinBps: 2000,
+                earlyVestRatioMaxBps: 6000,
+                baseTokenClaimBps: 2000,
+                isRefunding: false
+            })
+        });
+
+        iBUILDFactory.setProjectSeasonConfig(seasonParams);
+
         //1. define invariant based on states
         //2. add active season (unlocking)
         //3. fuzz claim

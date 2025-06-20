@@ -17,6 +17,7 @@ import {Pausable} from "@openzeppelin/contracts/utils/Pausable.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {MerkleProof} from "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
+
 contract BUILDClaim is IBUILDClaim, ITypeAndVersion, ReentrancyGuard {
   using SafeERC20 for IERC20;
   using FixedPointMathLib for uint256;
@@ -176,7 +177,7 @@ contract BUILDClaim is IBUILDClaim, ITypeAndVersion, ReentrancyGuard {
     uint256 maxTokenAmount,
     bool isEarlyClaim,
     uint256 salt
-  ) private pure returns (bool) {
+  ) internal virtual pure returns (bool) {
     bytes32 leaf =
       keccak256(bytes.concat(keccak256(abi.encode(user, maxTokenAmount, isEarlyClaim, salt))));
     return MerkleProof.verify(proof, root, leaf);
@@ -468,4 +469,19 @@ contract BUILDClaim is IBUILDClaim, ITypeAndVersion, ReentrancyGuard {
     }
     _;
   }
+}
+
+contract MockBUILDClaim is BUILDClaim {
+    constructor(address token) BUILDClaim(token) {}
+
+    function _verifyMerkleProof(
+        bytes32,
+        address,
+        bytes32[] memory,
+        uint256,
+        bool,
+        uint256
+    ) internal pure override returns (bool) {
+        return true;
+    }
 }
